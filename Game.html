@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Wizard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        #word-display {
+            font-size: 24px;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+        }
+        #guess-input {
+            font-size: 18px;
+            padding: 5px;
+            width: 30px;
+            text-align: center;
+        }
+        button {
+            font-size: 18px;
+            padding: 5px 10px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        #attempts {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Word Wizard</h1>
+        <div id="word-display"></div>
+        <input type="text" id="guess-input" maxlength="1">
+        <button onclick="makeGuess()">Guess</button>
+        <div id="message"></div>
+        <div id="attempts"></div>
+    </div>
+
+    <script>
+        const words = ['PYTHON', 'JAVASCRIPT', 'HTML', 'CSS', 'REACT', 'NODE'];
+        let selectedWord = '';
+        let guessedWord = [];
+        let remainingAttempts = 6;
+
+        function startGame() {
+            selectedWord = words[Math.floor(Math.random() * words.length)];
+            guessedWord = Array(selectedWord.length).fill('_');
+            remainingAttempts = 6;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            document.getElementById('word-display').textContent = guessedWord.join(' ');
+            document.getElementById('attempts').textContent = `Remaining attempts: ${remainingAttempts}`;
+        }
+
+        function makeGuess() {
+            const guessInput = document.getElementById('guess-input');
+            const guess = guessInput.value.toUpperCase();
+            guessInput.value = '';
+
+            if (guess.length !== 1) {
+                setMessage('Please enter a single letter.');
+                return;
+            }
+
+            if (selectedWord.includes(guess)) {
+                for (let i = 0; i < selectedWord.length; i++) {
+                    if (selectedWord[i] === guess) {
+                        guessedWord[i] = guess;
+                    }
+                }
+                setMessage('Good guess!');
+            } else {
+                remainingAttempts--;
+                setMessage('Wrong guess. Try again!');
+            }
+
+            updateDisplay();
+
+            if (guessedWord.join('') === selectedWord) {
+                setMessage('Congratulations! You guessed the word!');
+            } else if (remainingAttempts === 0) {
+                setMessage(`Game over! The word was ${selectedWord}.`);
+            }
+        }
+
+        function setMessage(msg) {
+            document.getElementById('message').textContent = msg;
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
